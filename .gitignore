@@ -1,5 +1,3 @@
-.vscode
+.vscode/
 venv/
-__pycache__
-Model_rankquest.ipynb
-temp/
+__pycache__/
