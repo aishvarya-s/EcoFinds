@@ -1,80 +1,43 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/Product');
+const Favorites = require('../models/Favorites');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// @route   POST /api/products
-// @desc    Create a product listing (Protected)
+// @route   POST /api/favorites
+// @desc    Add a product to user's favorites
 router.post('/', authMiddleware, async (req, res) => {
-    const { title, description, price, category, image_url } = req.body;
+    const { productId } = req.body;
+    const userId = req.user.id;
     try {
-        const result = await Product.create({
-            title,
-            description,
-            price,
-            category,
-            image_url,
-            seller_id: req.user.id
-        });
-        res.status(201).json({ msg: 'Product created', productId: result.insertId });
+        await Favorites.addFavorite(userId, productId);
+        res.status(201).json({ msg: 'Product added to favorites' });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');
     }
 });
 
-// @route   GET /api/products
-// @desc    Get all product listings (Public)
-router.get('/', async (req, res) => {
+// @route   GET /api/favorites
+// @desc    Get all favorite products for the logged-in user
+router.get('/', authMiddleware, async (req, res) => {
+    const userId = req.user.id;
     try {
-        const products = await Product.findAll();
-        res.json(products);
+        const favoriteProducts = await Favorites.findFavoritesByUser(userId);
+        res.json(favoriteProducts);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');
     }
 });
 
-// @route   GET /api/products/:id
-// @desc    Get a single product listing (Public)
-router.get('/:id', async (req, res) => {
+// @route   DELETE /api/favorites/:productId
+// @desc    Remove a product from favorites
+router.delete('/:productId', authMiddleware, async (req, res) => {
+    const userId = req.user.id;
+    const productId = req.params.productId;
     try {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ msg: 'Product not found' });
-        }
-        res.json(product);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// @route   PUT /api/products/:id
-// @desc    Update a product listing (Protected)
-router.put('/:id', authMiddleware, async (req, res) => {
-    const { title, description, price, category, image_url } = req.body;
-    try {
-        const result = await Product.update(req.params.id, {
-            title,
-            description,
-            price,
-            category,
-            image_url
-        });
-        res.json({ msg: 'Product updated' });
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// @route   DELETE /api/products/:id
-// @desc    Delete a product listing (Protected)
-router.delete('/:id', authMiddleware, async (req, res) => {
-    try {
-        await Product.delete(req.params.id);
-        res.json({ msg: 'Product deleted' });
+        await Favorites.removeFavorite(userId, productId);
+        res.json({ msg: 'Product removed from favorites' });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');

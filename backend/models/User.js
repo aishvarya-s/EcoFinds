@@ -1,11 +1,10 @@
 const connectDB = require('../config/db');
 const bcrypt = require('bcrypt');
 
-const pool = connectDB();
-
 const User = {
-    // Function to create a new user in the database
+    // Creates a new user in the database
     create: async ({ username, email, password }) => {
+        const pool = await connectDB();
         try {
             const salt = await bcrypt.genSalt(10);
             const password_hash = await bcrypt.hash(password, salt);
@@ -19,18 +18,20 @@ const User = {
         }
     },
 
-    // Function to find a user by their email
+    // Finds a user by their email for login
     findByEmail: async (email) => {
+        const pool = await connectDB();
         try {
             const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-            return rows[0]; // Returns the first user found or undefined
+            return rows[0];
         } catch (error) {
             throw error;
         }
     },
 
-    // Function to find a user by their ID
+    // Finds a user by their ID
     findById: async (id) => {
+        const pool = await connectDB();
         try {
             const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
             return rows[0];

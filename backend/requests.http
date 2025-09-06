@@ -1,0 +1,41 @@
+### Register a new user
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Log in and get a JWT token
+# Copy the token from the response for the next requests
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Get user profile (Protected)
+# Replace <YOUR_JWT_TOKEN> with the token you received from the login request
+GET http://localhost:5000/api/users/profile
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxfSwiaWF0IjoxNzU3MTMzMTQyLCJleHAiOjE3NTcxMzY3NDJ9.amME9MHDR0-XlrUD-gseE6S2NRwVerhs--XlFRAsyGo
+
+### Get all products (Public)
+GET http://localhost:5000/api/products
+
+### Create a new product (Protected)
+# Replace <YOUR_JWT_TOKEN> with the token you received from the login request
+POST http://localhost:5000/api/products
+Content-Type: application/json
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxfSwiaWF0IjoxNzU3MTMzMTQyLCJleHAiOjE3NTcxMzY3NDJ9.amME9MHDR0-XlrUD-gseE6S2NRwVerhs--XlFRAsyGo
+
+{
+  "title": "Vintage T-Shirt",
+  "description": "A well-preserved vintage t-shirt.",
+  "price": 15.50,
+  "category": "Apparel",
+  "image_url": "https://example.com/images/tshirt.jpg"
+}
