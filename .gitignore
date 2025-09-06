@@ -1,3 +1,22 @@
 .vscode/
 venv/
 __pycache__/
+# Dependency folders. These are auto-generated.
+node_modules/
+venv/
+
+# Environment Variables. This is for your sensitive info.
+.env
+
+# Build Artifacts. These are generated for production.
+frontend/build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+
+# Operating System and Editor Specific Files
+.DS_Store
+.vscode/
+Thumbs.db
