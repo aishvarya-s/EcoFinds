@@ -16,7 +16,7 @@ function App() {
           </nav>
         </header>
         <Routes>
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/" element={<h2>Home Page</h2>} />
           <Route path="/products" element={<ProductFeed />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Auth isLogin={true} />} />
